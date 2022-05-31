@@ -1,10 +1,43 @@
-# myob-mini-opdracht
+# myob-mini-opdracht 2.0
 
 Hoe laad je een stylesheet in? 
 Het inladen van een stylesheet in WordPress kan door het in de header.php te zetten. Alleen als best practice is er een andere manier. Hoe zou jij dit doen zodat bijvoorbeeld versie beheer voor caching ook wordt meegenomen?
 
-Antwoord: 
-Door gebruik te maken van critical CSS en dat te genereren in Wordpress. Dit kan met behulp van een plugin bijvoorbeeld WP-Rocket. Je kunt hierop eenvouwdig CSS bestanden en kritieke CSS levering optimaliseren. 
+**Stylesheet Antwoord** 
+Open FTP-client (met bijvoorbeeld FileZilla) en login op je FTP omgeving. Ga naar functions.php (meestal: public_html > wp-content > themes > jouw child theme naam > function.php en download dit bestand.
+Open dit bestand in je code editor.
+Plaats onderstaande code onderin je functions.php en upload je functions.php weer.
+
+function enqueue_my_custom_styles() {
+  // Registreer mijn custom stylesheet
+  wp_register_style( 'custom-styles', get_stylesheet_directory_uri() . '/css/custom.css' );
+  // Laad mijn custom stylesheet
+  wp_enqueue_style( 'custom-styles' );
+}
+
+add_action( 'wp_enqueue_scripts', 'enqueue_my_custom_styles', 99 );
+
+Het enige wat we nu nog moeten doen is in je child-theme een map aan te maken genaamd CSS en daarin je custom.css bestand te plaatsen.
+
+**Omgaan met data**
+WordPress get_posts is een handige functie waarmee je content uit de WordPress-database kunnen ophalen. Je kunt op gedetailleerd niveau aangeven naar welke berichten, pagina’s en aangepaste berichtentypes je op zoek bent, je eigen set aan resultaten krijgen en vervolgens de items filteren en ordenen.
+
+Naar mijn idee krijg je met onderstaande code de laatste 5 blog berichten te zien... :
+
+$args = array(
+	'numberposts'	=> 5,
+);
+$my_posts = get_posts( $args );
+
+if( ! empty( $my_posts ) ){
+	$output = '<ul>';
+	foreach ( $my_posts as $p ){
+		$output .= '<li><a href="' . get_permalink( $p->ID ) . '">' 
+		. $p->post_title . '</a></li>';
+	}
+	$output .= '<ul>';
+} 
+
 
 
 Wat houdt ‘the_loop’ in en waarom gebruiken we dit?
